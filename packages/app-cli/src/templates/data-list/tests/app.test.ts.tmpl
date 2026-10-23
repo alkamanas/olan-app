@@ -1,0 +1,62 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { renderApp } from '@olan-app/cli/testing';
+
+// fixtures/db.json seeds the `notes` collection; `fixtures: { db }` here replaces it per test.
+// `app.host.data.db` is the live database (every user's rows); `app.host.audit()` lists deletions.
+
+test('lists notes newest first and adds one', async () => {
+  const app = await renderApp({ surface: 'app', now: '2026-10-17T09:00:00Z' });
+  app.expectText('Sunucu yedeklerini kontrol et');
+  app.expectText('Haftalık toplantı gündemi');
+
+  await app.press('Yeni not');
+  await app.fill('Başlık', 'Lansman planı');
+  await app.fill('Not', 'Tarih netleşsin');
+  await app.press('Kaydet');
+
+  assert.equal(app.calls('db.insert')[0]?.ok, true);
+  assert.deepEqual(app.toasts().at(-1), { text: 'Not eklendi', tone: 'success' });
+  assert.equal(app.host.data.db.notes?.length, 3);
+  // Back on the list, the new note is first (orderBy createdAt desc).
+  const items = app.find('List')[0]?.props.items as { title: string }[];
+  assert.equal(items[0]?.title, 'Lansman planı');
+  await app.dispose();
+});
+
+test('marks a note done and deletes it', async () => {
+  const app = await renderApp();
+  await app.press('Haftalık toplantı gündemi');
+  app.expectText('Durum: Açık');
+
+  await app.press('Tamamlandı');
+  app.expectText('Durum: Tamamlandı');
+  assert.equal(app.host.data.db.notes?.find((row) => row.data.title === 'Haftalık toplantı gündemi')?.revision, 2);
+
+  await app.press('Sil');
+  assert.equal(app.calls('db.delete')[0]?.ok, true);
+  assert.deepEqual(app.host.audit(), [{ action: 'db.delete', detail: { collection: 'notes', rowId: '0b9a3c52-5f0e-4a8e-9d2c-1c6f8f3e7a01' } }]);
+  app.expectNoText('Haftalık toplantı gündemi');
+  await app.dispose();
+});
+
+test("cannot delete someone else's note (rules.delete = owner)", async () => {
+  const app = await renderApp({ userId: 'u2' });
+  await app.press('Sunucu yedeklerini kontrol et');
+  await app.press('Sil');
+  assert.equal(app.calls('db.delete')[0]?.error?.code, 'forbidden_record');
+  assert.match(app.toasts().at(-1)?.text ?? '', /korunuyor/);
+  await app.dispose();
+});
+
+test('shows an empty state without notes and needs the db permission', async () => {
+  const empty = await renderApp({ fixtures: { db: {} } });
+  empty.expectText('Henüz not yok');
+  await empty.dispose();
+
+  const denied = await renderApp({ permissions: [] });
+  assert.equal(denied.calls('db.query')[0]?.error?.code, 'permission_denied');
+  denied.expectText('Notlar yüklenemedi');
+  await denied.dispose();
+});

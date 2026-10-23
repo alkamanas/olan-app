@@ -1,0 +1,56 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { remote, renderApp } from '@olan-app/cli/testing';
+
+import { createRoutes, createStore } from '../app-server/routes.ts';
+
+// The UI against the app server's real routes (in memory, no HTTP), with handleRequest's rules.
+const routes = () => createRoutes(createStore(), () => 'http://127.0.0.1:4100');
+
+test('adds an item and uploads its file', async () => {
+  const app = await renderApp({ remote: remote(routes()), ui: { files: ['kampanya.jpg'] }, upload: () => ({ status: 201, body: { ok: true } }) });
+  app.expectText('Henüz kayıt yok');
+  await app.fill('Başlık', 'Ekim görseli');
+  await app.press('Dosya ekle');
+  assert.deepEqual(app.toasts().at(-1), { text: 'Dosya yüklendi', tone: 'success' });
+  const [upload] = app.host.uploads;
+  assert.equal(upload?.method, 'PUT');
+  assert.match(upload!.url, /^http:\/\/127\.0\.0\.1:4100\/olan\/uploads\/it_[a-z0-9]+\?token=/);
+  assert.equal(upload?.headers['x-olan-file-name'], 'kampanya.jpg');
+  app.expectText('Ekim görseli');
+  await app.dispose();
+});
+
+test('cancels a running upload', async () => {
+  // An upload handler that never answers keeps the upload running until the app cancels it.
+  const app = await renderApp({ remote: remote(routes()), ui: { files: ['kampanya.jpg'] }, upload: () => new Promise(() => {}) });
+  const pressing = app.press('Dosya ekle'); // not awaited: it settles only when the upload ends
+  await app.waitFor((view) => view.find('ProgressBar').length > 0);
+  await app.press('İptal');
+  await pressing;
+  assert.equal(app.host.uploads[0]?.status, 'cancelled');
+  assert.deepEqual(app.toasts().at(-1), { text: 'Yükleme iptal edildi', tone: 'warning' });
+  // The app removed the item that waited for the file.
+  const methods = app.calls('remote.request').map((call) => (call.params as { method: string }).method);
+  assert.deepEqual(methods, ['GET', 'POST', 'DELETE', 'GET']);
+  await app.dispose();
+});
+
+test("shows the server's 422 message", async () => {
+  const app = await renderApp({
+    remote: remote({ ...routes(), 'POST /items': () => ({ status: 422, body: { error: 'validation_failed', issues: { title: 'Başlık çok uzun' } } }) }),
+    ui: { files: ['kampanya.jpg'] },
+  });
+  await app.press('Dosya ekle');
+  app.expectText('Başlık çok uzun');
+  assert.equal(app.calls('remote.request').at(-1)?.error?.code, 'remote_rejected');
+  await app.dispose();
+});
+
+test('without the remote permission every call is refused', async () => {
+  const app = await renderApp({ remote: false });
+  app.expectText('Uygulama sunucusuna erişim kapalı');
+  assert.equal(app.calls('remote.request')[0]?.error?.code, 'permission_denied');
+  await app.dispose();
+});

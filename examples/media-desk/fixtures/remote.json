@@ -1,0 +1,86 @@
+{
+  "GET /items": {
+    "status": 200,
+    "body": {
+      "items": [
+        {
+          "id": "m_kampanya",
+          "title": "Ekim kampanyası",
+          "caption": "Yeni sezon ürünleri",
+          "channels": ["instagram", "tiktok"],
+          "publishNow": false,
+          "status": "ready",
+          "fileName": "kampanya.jpg",
+          "type": "image/jpeg",
+          "size": 245760,
+          "mediaUrl": "http://127.0.0.1:4419/olan/media/m_kampanya",
+          "ownerId": "00000000-0000-4000-8000-000000000001",
+          "ownerName": "Utku",
+          "views": 5400,
+          "spend": 1250.5,
+          "engagement": 0.034,
+          "createdAt": "2026-10-15T09:00:00.000Z"
+        },
+        {
+          "id": "m_tanitim",
+          "title": "Tanıtım videosu",
+          "caption": "",
+          "channels": ["youtube"],
+          "publishNow": true,
+          "status": "processing",
+          "fileName": "tanitim.mp4",
+          "type": "video/mp4",
+          "size": 5242880,
+          "mediaUrl": "http://127.0.0.1:4419/olan/media/m_tanitim",
+          "ownerId": "00000000-0000-4000-8000-000000000001",
+          "ownerName": "Utku",
+          "views": 800,
+          "spend": 300,
+          "engagement": 0.021,
+          "createdAt": "2026-10-16T08:00:00.000Z"
+        }
+      ]
+    }
+  },
+  "GET /stats": {
+    "body": {
+      "views": 6200,
+      "spend": 1550.5,
+      "engagement": 0.028,
+      "delta": { "views": 0.124, "spend": -0.05, "engagement": 0.018 },
+      "days": [
+        { "day": "2026-10-10", "organic": 20, "paid": 30, "engagement": 0.022 },
+        { "day": "2026-10-11", "organic": 40, "paid": 60, "engagement": 0.024 },
+        { "day": "2026-10-12", "organic": 60, "paid": 90, "engagement": 0.025 },
+        { "day": "2026-10-13", "organic": 80, "paid": 120, "engagement": 0.026 },
+        { "day": "2026-10-14", "organic": 100, "paid": 150, "engagement": 0.028 },
+        { "day": "2026-10-15", "organic": 120, "paid": 180, "engagement": 0.03 },
+        { "day": "2026-10-16", "organic": 140, "paid": 210, "engagement": 0.031 }
+      ]
+    }
+  },
+  "GET /connections": { "body": { "connection": null, "webUrl": "http://127.0.0.1:4419/" } },
+  "GET /me": { "body": { "id": "00000000-0000-4000-8000-000000000001", "displayName": "Utku", "email": "utku@example.com", "role": "member" } },
+  "GET /items/:id": {
+    "body": {
+      "item": {
+        "id": "m_kampanya",
+        "title": "Ekim kampanyası",
+        "caption": "Yeni sezon ürünleri",
+        "channels": ["instagram", "tiktok"],
+        "publishNow": false,
+        "status": "ready",
+        "fileName": "kampanya.jpg",
+        "type": "image/jpeg",
+        "size": 245760,
+        "mediaUrl": "http://127.0.0.1:4419/olan/media/m_kampanya",
+        "ownerId": "00000000-0000-4000-8000-000000000001",
+        "ownerName": "Utku",
+        "views": 5400,
+        "spend": 1250.5,
+        "engagement": 0.034,
+        "createdAt": "2026-10-15T09:00:00.000Z"
+      }
+    }
+  }
+}

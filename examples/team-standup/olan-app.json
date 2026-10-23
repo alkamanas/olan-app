@@ -1,0 +1,64 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "com.olan.examples.team-standup",
+  "name": "Team Standup",
+  "version": "0.2.0",
+  "sdk": "^1.4.0",
+  "minServerVersion": "0.1.0",
+  "description": "Sohbetten ve e-postadan standup görevi, /standup kartı, etkinliğe standup notu, toplantı paneli ve asistan için standup araçları",
+  "entry": "dist/app.js",
+  "icon": "assets/icon.png",
+  "surfaces": {
+    "app": { "title": "Team Standup" },
+    "chat.action": { "title": "Standup'a ekle" },
+    "chat.command": { "title": "Standup", "command": "standup", "description": "Bugünün standup'ını aç" },
+    "calendar.event.action": { "title": "Standup notu" },
+    "mail.action": { "title": "Standup'a ekle" },
+    "mail.sidebar": { "title": "Standup" },
+    "meeting.panel": { "title": "Standup" }
+  },
+  "permissions": ["projects:read", "tasks:write", "chat:read", "chat:write", "calendar:read", "calendar:write", "calendar:delete", "mail:read", "meetings:read"],
+  "remote": {
+    "url": "http://127.0.0.1:4417/olan",
+    "jwksUrl": "http://127.0.0.1:4417/.well-known/jwks.json"
+  },
+  "events": ["project.task.created", "chat.message.created"],
+  "ai": {
+    "tools": [
+      {
+        "name": "standup_summary",
+        "title": "Standup özeti",
+        "description": "Summarises the standup state of the person's projects: for each project the number of open tasks, overdue tasks and tasks completed today, plus the first open tasks with due date and assignee. Give projectId to summarise one project; without it every project the person can see is summarised. Read-only.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "projectId": { "type": "string", "description": "Olan project id; omit for all visible projects." }
+          },
+          "additionalProperties": false
+        },
+        "permissions": ["projects:read"],
+        "readOnly": true,
+        "destructive": false
+      },
+      {
+        "name": "standup_add_task",
+        "title": "Standup görevi ekle",
+        "description": "Adds one task to an Olan project for the standup, in the project's first work package. Give projectId and the task title; description is optional. It creates a record, so the person confirms it first.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "projectId": { "type": "string", "description": "Olan project id." },
+            "title": { "type": "string", "minLength": 1, "maxLength": 200, "description": "Task title." },
+            "description": { "type": "string", "maxLength": 4000, "description": "Optional task description." }
+          },
+          "required": ["projectId", "title"],
+          "additionalProperties": false
+        },
+        "permissions": ["projects:read", "tasks:write"],
+        "readOnly": false,
+        "destructive": false
+      }
+    ]
+  }
+}

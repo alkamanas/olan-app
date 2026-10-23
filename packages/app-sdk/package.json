@@ -1,0 +1,67 @@
+{
+  "name": "@olan-app/sdk",
+  "version": "1.8.1",
+  "description": "Olan Apps SDK: defineApp, components, reconciler, olan.* APIs and hooks; @olan-app/sdk/server for app servers",
+  "homepage": "https://docs.olan.app",
+  "bugs": {
+    "url": "https://github.com/alkamanas/olan-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alkamanas/olan-app.git",
+    "directory": "packages/app-sdk"
+  },
+  "license": "MIT",
+  "author": "Alkamanas",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./protocol": "./src/protocol.ts",
+    "./tree": "./src/tree.ts",
+    "./runtime": "./src/runtime/index.ts",
+    "./memory-db": "./src/memory-db/index.ts",
+    "./db-contract": "./test/db-contract.ts",
+    "./server": {
+      "types": "./src/server/index.ts",
+      "default": "./dist/server.js"
+    },
+    "./backend": {
+      "types": "./src/backend/index.ts",
+      "default": "./dist/backend.js"
+    },
+    "./*": "./src/*"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/*.test.*",
+    "test/db-contract.ts",
+    "docs",
+    "llms.txt"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p .",
+    "check-dist": "node scripts/build.mjs --check"
+  },
+  "dependencies": {
+    "@olan-app/schema": "^1.8.0",
+    "@types/react": "^19.2.7",
+    "@types/react-reconciler": "^0.33.0",
+    "react": "19.2.5",
+    "react-reconciler": "^0.33.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.5",
+    "esbuild": "^0.28.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

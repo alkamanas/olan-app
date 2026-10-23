@@ -1,0 +1,17 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "{{appId}}",
+  "name": "{{appName}}",
+  "version": "0.1.0",
+  "sdk": "^1.8.0",
+  "minServerVersion": "{{minServerVersion}}",
+  "description": "Projenin hedefi ve hedefe bağlı iş paketinin ilerlemesi",
+  "entry": "dist/app.js",
+  "icon": "assets/icon.png",
+  "surfaces": {
+    "project.tab": { "title": "Hedef" },
+    "project.settings": { "title": "Hedef ayarları" }
+  },
+  "permissions": ["projects:read"]
+}

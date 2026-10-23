@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.olan-app/
+# Olan app signing key: never commit it
+olan-app.key.json
+remote-server/.data/

@@ -1,0 +1,17 @@
+{
+  "GET /items": {
+    "body": {
+      "items": [
+        { "id": "it_1", "title": "Teklif", "status": "ready", "fileName": "teklif.pdf", "size": 48213, "createdBy": "00000000-0000-4000-8000-000000000001" }
+      ]
+    }
+  },
+  "POST /items": {
+    "status": 201,
+    "body": {
+      "item": { "id": "it_2", "title": "Yeni dosya", "status": "awaiting_upload", "fileName": null, "size": null, "createdBy": "00000000-0000-4000-8000-000000000001" },
+      "upload": { "url": "http://127.0.0.1:4100/olan/uploads/it_2?token=dev", "method": "PUT" }
+    }
+  },
+  "DELETE /items/:id": { "status": 204 }
+}

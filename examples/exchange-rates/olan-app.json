@@ -1,0 +1,17 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "com.olan.examples.exchange-rates",
+  "name": "Döviz kurları",
+  "version": "0.1.0",
+  "sdk": "^1.0.0",
+  "minServerVersion": "0.1.0",
+  "description": "Güncel döviz kurları ve son günlerin grafiği (harici API)",
+  "entry": "dist/app.js",
+  "icon": "assets/icon.png",
+  "surfaces": {
+    "app": { "title": "Döviz kurları" },
+    "settings": { "title": "Para birimi" }
+  },
+  "permissions": ["http:rates.example.com", "storage"]
+}

@@ -1,0 +1,18 @@
+{
+  "decisions": [
+    {
+      "id": "a3c1e5f7-2b4d-4c6e-8a0b-1d3f5a7c9e01",
+      "data": { "title": "Lansman tarihi 1 Kasım", "status": "done", "projectId": "7a1d4c2e-1f3b-4e5a-9c6d-0b8e2f4a6c10", "decidedOn": "2026-10-14", "score": 8 },
+      "createdAt": "2026-10-14T10:00:00.000Z"
+    },
+    {
+      "id": "b4d2f6a8-3c5e-4d7f-9b1c-2e4a6b8d0f02",
+      "data": { "title": "Basın bültenini ajans yazsın", "status": "open", "projectId": "7a1d4c2e-1f3b-4e5a-9c6d-0b8e2f4a6c10", "decidedOn": "2026-10-15" },
+      "createdAt": "2026-10-15T10:00:00.000Z",
+      "createdBy": "u2"
+    }
+  ],
+  "pins": [
+    { "data": { "decisionId": "a3c1e5f7-2b4d-4c6e-8a0b-1d3f5a7c9e01" }, "createdAt": "2026-10-15T11:00:00.000Z" }
+  ]
+}

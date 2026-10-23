@@ -1,0 +1,11 @@
+[
+  {
+    "id": "site",
+    "name": "Web sitesi",
+    "tasks": [
+      { "id": "s1", "title": "Ana sayfa metni", "status": "in-process", "due": "2026-10-18" },
+      { "id": "s2", "title": "Görseller", "status": "needs-action", "due": "2026-10-22" },
+      { "id": "s3", "title": "Alan adı", "status": "completed", "due": "2026-10-01" }
+    ]
+  }
+]

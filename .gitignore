@@ -1,0 +1,14 @@
+node_modules/
+dist/
+!packages/*/dist/
+package-lock.json
+.DS_Store
+*.log
+.env
+.env.*
+olan-app.key.json
+.olan-app/
+.test-tmp/
+site/dist/
+examples/*/dist/
+examples/*/remote-server/.data/

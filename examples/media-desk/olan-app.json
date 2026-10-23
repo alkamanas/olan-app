@@ -1,0 +1,21 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "com.olan.examples.media-desk",
+  "name": "Medya Masası",
+  "version": "0.1.0",
+  "sdk": "^1.5.0",
+  "minServerVersion": "0.1.0",
+  "description": "Medya yükleme, kanal seçimi, analiz ve hesap bağlama; veriler uygulamanın kendi sunucusunda (olan.remote.request)",
+  "entry": "dist/app.js",
+  "icon": "assets/icon.png",
+  "surfaces": {
+    "app": { "title": "Medya Masası" }
+  },
+  "permissions": ["profile:read", "files:pick"],
+  "remote": {
+    "url": "http://127.0.0.1:4419/olan",
+    "jwksUrl": "http://127.0.0.1:4419/.well-known/jwks.json",
+    "requests": true
+  }
+}

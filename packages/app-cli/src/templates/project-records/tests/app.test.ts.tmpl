@@ -1,0 +1,72 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { renderApp } from '@olan-app/cli/testing';
+
+const AYSE = '00000000-0000-4000-8000-000000000002';
+
+test('links a record to the task: card, status, calendar item and feed line', async () => {
+  // Default params: the first task ("Toplantı masası", due 2026-11-05) of the first fixture project.
+  const app = await renderApp({ surface: 'task.action' });
+  await app.fill('Kayıt numarası', 'SAT-12');
+  await app.press('Bağla');
+  assert.deepEqual(app.toasts(), [{ text: 'Kayıt bağlandı', tone: 'success' }]);
+
+  const { data } = app.host;
+  const link = data.recordLinks.office?.find((candidate) => candidate.externalId === 'SAT-12');
+  assert.deepEqual(link?.target, { kind: 'task', id: 'desk' });
+  assert.equal(link?.title, 'SAT-12 · Toplantı masası');
+  // The task moved to the app's status (an "in progress" kind of status).
+  assert.equal(data.taskStatusIds.desk, 'office-status-awaiting-approval');
+  assert.equal(data.projects[0]?.tasks.find((task) => task.id === 'desk')?.status, 'in-process');
+  const item = data.projectCalendarItems.office?.find((candidate) => candidate.externalId === 'SAT-12');
+  assert.equal(item?.start, '2026-11-05T00:00:00.000Z');
+  assert.equal(item?.linkId, link?.id);
+  assert.ok(data.projectActivity.office?.some((line) => line.type === 'APP_ACTIVITY' && line.text === 'SAT-12 satın alma kaydı bağlandı, onay bekliyor'));
+  await app.dispose();
+});
+
+test('asks a manager to approve a linked record', async () => {
+  const app = await renderApp({ surface: 'task.action' });
+  await app.fill('Kayıt numarası', 'SAT-13');
+  await app.press('Bağla');
+  app.expectText('Bu göreve bağlı kayıt');
+  await app.press('Onay iste');
+  assert.deepEqual(app.toasts().at(-1), { text: 'Onay istendi', tone: 'success' });
+  const approval = app.host.data.projectApprovals.office?.at(-1);
+  assert.equal(approval?.title, 'SAT-13 · Toplantı masası onayı');
+  assert.deepEqual(approval?.approvers, [AYSE]);
+  assert.equal(approval?.state, 'pending');
+  // An approver decides in their approval box; the app hears it as project.approval.decided.
+  assert.equal(app.host.decideApproval('office', approval!.id, 'approve', { userId: AYSE }).state, 'approved');
+  await app.dispose();
+});
+
+test('the record card shows the record and completes the task through the link', async () => {
+  // Default params: the app's first record link of the first project (SAT-7 on "Ekranlar").
+  const app = await renderApp({ surface: 'record.card' });
+  app.expectText('SAT-7 · 4 ekran');
+  app.expectText('SAT-7 · 4 ekran onayı');
+  app.expectText('Bekliyor');
+  app.expectText('Teslim: 4 ekran');
+  await app.press('Teslim alındı');
+  assert.deepEqual(app.toasts(), [{ text: 'Görev tamamlandı', tone: 'success' }]);
+  assert.equal(app.host.data.taskStatusIds.screens, 'office-status-done');
+  assert.equal(app.host.data.projects[0]?.tasks.find((task) => task.id === 'screens')?.status, 'completed');
+  await app.dispose();
+});
+
+test('lists the linked records in the project tab', async () => {
+  const app = await renderApp({ surface: 'project.tab' });
+  app.expectText('1 kayıt');
+  app.expectText('SAT-7 · 4 ekran');
+  app.expectText('Onay bekliyor');
+  await app.dispose();
+});
+
+test('says so in a project the app was not added to', async () => {
+  const task = { id: 'hidden-1', key: null, title: 'Gizli görev', status: 'needs-action', statusId: null, statusCategory: null, assigneeId: null, due: null };
+  const app = await renderApp({ surface: 'task.action', params: { projectId: 'hidden', task } });
+  app.expectText('Uygulama bu projeye eklenmemiş');
+  await app.dispose();
+});

@@ -1,0 +1,17 @@
+{
+  "name": "@olan-app/docs-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site for https://docs.olan.app, built from the @olan-app/sdk docs",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "markdown-it": "15.0.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

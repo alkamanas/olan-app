@@ -1,0 +1,6 @@
+{
+  "records": [
+    { "id": "rec-task-1", "data": { "kind": "task", "title": "Sunucu sertifikasını yenile", "projectId": "p0" } },
+    { "id": "rec-push-1", "data": { "kind": "push", "title": "visetra/olan: main dalına 3 commit", "detail": { "repository": "visetra/olan", "branch": "main", "commits": 3 } } }
+  ]
+}

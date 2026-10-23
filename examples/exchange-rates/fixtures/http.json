@@ -1,0 +1,52 @@
+{
+  "https://rates.example.com/v1/latest?base=USD": {
+    "status": 200,
+    "json": { "base": "USD", "date": "2026-10-16", "rates": { "EUR": 0.9214, "GBP": 0.7702, "TRY": 34.2875 } }
+  },
+  "https://rates.example.com/v1/latest?base=EUR": {
+    "status": 200,
+    "json": { "base": "EUR", "date": "2026-10-16", "rates": { "GBP": 0.8359, "TRY": 37.2131, "USD": 1.0853 } }
+  },
+  "https://rates.example.com/v1/history?base=USD&symbol=TRY&days=5": {
+    "status": 200,
+    "json": {
+      "base": "USD",
+      "symbol": "TRY",
+      "points": [
+        { "date": "2026-10-12", "rate": 34.1012 },
+        { "date": "2026-10-13", "rate": 34.1530 },
+        { "date": "2026-10-14", "rate": 34.2104 },
+        { "date": "2026-10-15", "rate": 34.2466 },
+        { "date": "2026-10-16", "rate": 34.2875 }
+      ]
+    }
+  },
+  "https://rates.example.com/v1/history?base=USD&symbol=EUR&days=5": {
+    "status": 200,
+    "json": {
+      "base": "USD",
+      "symbol": "EUR",
+      "points": [
+        { "date": "2026-10-12", "rate": 0.9188 },
+        { "date": "2026-10-13", "rate": 0.9201 },
+        { "date": "2026-10-14", "rate": 0.9196 },
+        { "date": "2026-10-15", "rate": 0.9207 },
+        { "date": "2026-10-16", "rate": 0.9214 }
+      ]
+    }
+  },
+  "https://rates.example.com/v1/history?base=EUR&symbol=TRY&days=5": {
+    "status": 200,
+    "json": {
+      "base": "EUR",
+      "symbol": "TRY",
+      "points": [
+        { "date": "2026-10-12", "rate": 37.1150 },
+        { "date": "2026-10-13", "rate": 37.1544 },
+        { "date": "2026-10-14", "rate": 37.1820 },
+        { "date": "2026-10-15", "rate": 37.2010 },
+        { "date": "2026-10-16", "rate": 37.2131 }
+      ]
+    }
+  }
+}

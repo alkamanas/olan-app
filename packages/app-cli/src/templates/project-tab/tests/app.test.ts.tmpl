@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { renderApp } from '@olan-app/cli/testing';
+
+test('shows the goal and the progress of its work package', async () => {
+  const app = await renderApp({ surface: 'project.tab', params: { projectId: 'site' } });
+  app.expectText('Lansmana hazır ana sayfa');
+  app.expectText('Lansman');
+  app.expectText('1/2 tamamlandı');
+  app.expectText('Görseller');
+  app.expectNoText('Blog'); // another work package
+  await app.dispose();
+});
+
+test('asks for a goal in a project without one', async () => {
+  const app = await renderApp({ surface: 'project.tab', params: { projectId: 'office' } });
+  app.expectText('Bu projenin hedefi yok');
+  app.expectText('Tüm görevler');
+  await app.dispose();
+});
+
+test('says so in a project the app was not added to', async () => {
+  const app = await renderApp({ surface: 'project.tab', params: { projectId: 'hidden' } });
+  app.expectText('Uygulama bu projeye eklenmemiş');
+  await app.dispose();
+});
+
+test('saves the goal of the project from its settings', async () => {
+  const app = await renderApp({ surface: 'project.settings', params: { projectId: 'office' } });
+  await app.fill('Hedef', 'Ay sonunda taşınmış olmak');
+  await app.press('Kaydet');
+  assert.deepEqual(app.toasts(), [{ text: 'Hedef kaydedildi', tone: 'success' }]);
+  const saved = app.host.data.projectConfigs.office;
+  assert.equal(saved?.value.goal, 'Ay sonunda taşınmış olmak');
+  assert.equal(saved?.revision, 1);
+  await app.dispose();
+});

@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { renderApp } from '@olan-app/cli/testing';
+
+const URL = 'https://status.example.com/api/services.json';
+
+test('shows services from fixtures/http.json', async () => {
+  const app = await renderApp();
+  app.expectText('E-posta');
+  app.expectText('Yavaş');
+  app.expectText('Kapalı');
+  assert.equal(app.calls('http.fetch')[0]?.params && (app.calls('http.fetch')[0]!.params as { url: string }).url, URL);
+  await app.dispose();
+});
+
+test('shows an error when the API fails, and retries', async () => {
+  const app = await renderApp({ fixtures: { http: { [URL]: { status: 503, body: 'down' } } } });
+  app.expectText('The status API answered 503');
+  app.host.data.http[URL] = { status: 200, json: { services: [{ id: 'api', name: 'API', status: 'up' }] } };
+  await app.press('Tekrar dene');
+  app.expectText('Çalışıyor');
+  await app.dispose();
+});
+
+test('cannot call the API without the http: permission', async () => {
+  const app = await renderApp({ permissions: [] });
+  assert.equal(app.calls('http.fetch')[0]?.error?.code, 'http_blocked');
+  app.expectText('Durum alınamadı');
+  await app.dispose();
+});

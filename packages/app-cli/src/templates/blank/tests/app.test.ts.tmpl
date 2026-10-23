@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { renderApp } from '@olan-app/cli/testing';
+
+test('counts presses', async () => {
+  const app = await renderApp({ surface: 'app' });
+  app.expectText('Düğmeye 0 kez bastınız.');
+  await app.press('Bas');
+  await app.press('Bas');
+  app.expectText('Düğmeye 2 kez bastınız.');
+  await app.dispose();
+});
+
+test('shows a toast', async () => {
+  const app = await renderApp();
+  await app.press('Bildirim göster');
+  assert.deepEqual(app.toasts(), [{ text: 'Merhaba Olan!', tone: 'success' }]);
+  await app.dispose();
+});

@@ -1,0 +1,4 @@
+# esbuild output (`npm run build`)
+dist/
+# Scratch projects created by the unit tests
+.test-tmp/

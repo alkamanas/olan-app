@@ -1,0 +1,50 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "{{appId}}",
+  "name": "{{appName}}",
+  "version": "0.1.0",
+  "sdk": "^1.8.0",
+  "minServerVersion": "{{minServerVersion}}",
+  "description": "Satın alma kayıtlarını görevlere bağlar, onaya gönderir ve teslim tarihini takvime ekler",
+  "entry": "dist/app.js",
+  "icon": "assets/icon.png",
+  "surfaces": {
+    "task.action": { "title": "Kayda bağla" },
+    "record.card": { "title": "Kayıt" },
+    "project.tab": { "title": "Kayıtlar" }
+  },
+  "permissions": ["projects:read", "tasks:write", "projects:extend"],
+  "projectTemplates": [
+    {
+      "key": "purchasing",
+      "name": "Satın alma",
+      "description": "Satın alma talepleri: talep, onay, sipariş ve teslim. Uygulama bu projeye eklenmiş olarak gelir.",
+      "content": {
+        "version": 1,
+        "lists": [
+          {
+            "key": "requests",
+            "title": "Talepler",
+            "steps": [
+              { "key": "approval", "title": "Onay" },
+              { "key": "delivery", "title": "Teslim" }
+            ]
+          }
+        ],
+        "statuses": [
+          { "key": "todo", "name": "Yeni talep", "color": "#8A94A6", "category": "unstarted" },
+          { "key": "awaiting-approval", "name": "Onay bekliyor", "color": "#E0A526", "category": "started" },
+          { "key": "ordered", "name": "Sipariş verildi", "color": "#5B8DEF", "category": "started" },
+          { "key": "done", "name": "Teslim alındı", "color": "#2F9E6E", "category": "completed" },
+          { "key": "cancelled", "name": "İptal", "color": "#A1A7B3", "category": "cancelled" }
+        ],
+        "labels": [
+          { "name": "Donanım", "color": "#5B8DEF", "groupName": "Tür" },
+          { "name": "Mobilya", "color": "#F59E0B", "groupName": "Tür" }
+        ],
+        "settings": { "description": "Satın alma talepleri ve teslimleri" }
+      }
+    }
+  ]
+}

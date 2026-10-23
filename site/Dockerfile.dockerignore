@@ -1,0 +1,10 @@
+# Context allowlist for `docker build -f site/Dockerfile .` (repository root).
+*
+!docs/*.md
+!packages/app-sdk/README.md
+!packages/app-sdk/llms.txt
+!site/package.json
+!site/package-lock.json
+!site/build.mjs
+!site/style.css
+!site/nginx.conf

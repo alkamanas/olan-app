@@ -1,0 +1,82 @@
+import assert from 'node:assert/strict';
+import { after, before, test } from 'node:test';
+
+import { createTestIssuer, signRemoteRequest, type RemoteRequestSignInput, type RemoteRequestSignOptions, type TestIssuer } from '@olan-app/cli/testing';
+
+import { APP_ID, startAppServer, type AppServer } from '../app-server/server.ts';
+
+/*
+ * The app server over HTTP, with requests signed exactly as Olan signs POST {remote.url}/requests.
+ * createTestIssuer serves /.well-known/olan and the JWKS on 127.0.0.1, so createOlanServer verifies
+ * them like production requests.
+ */
+
+const WEB_ORIGIN = 'http://localhost:3000';
+let issuer: TestIssuer;
+let server: AppServer;
+
+before(async () => {
+  issuer = await createTestIssuer();
+  server = await startAppServer(0, { issuers: [issuer.issuer], webOrigins: [WEB_ORIGIN] });
+});
+after(async () => {
+  await server.close();
+  await issuer.close();
+});
+
+/** POSTs a signed request; answers the HTTP status and the JSON body. */
+async function send(signed: { headers: Record<string, string>; body: string }) {
+  const response = await fetch(`${server.url}/olan/requests`, { method: 'POST', headers: signed.headers, body: signed.body });
+  return { http: response.status, json: (await response.json()) as { status?: number; body?: unknown; error?: string } };
+}
+
+const request = (init: RemoteRequestSignInput['request'], options?: RemoteRequestSignOptions) => send(signRemoteRequest(issuer, { appId: APP_ID, request: init }, options));
+
+test('answers HTTP 200 with the { status, headers, body } wrapper', async () => {
+  const created = await request({ method: 'POST', path: '/items', body: { title: 'Teklif' } });
+  assert.equal(created.http, 200);
+  assert.equal(created.json.status, 201);
+  const { item, upload } = created.json.body as { item: { id: string; status: string }; upload: { url: string } };
+  assert.equal(item.status, 'awaiting_upload');
+  assert.ok(upload.url.startsWith(`${server.url}/olan/uploads/${item.id}?token=`));
+
+  const listed = await request({ method: 'GET', path: '/items' });
+  assert.equal((listed.json.body as { items: unknown[] }).items.length, 1);
+});
+
+test('route errors stay inside the wrapper', async () => {
+  const unknown = await request({ method: 'GET', path: '/nope' });
+  assert.deepEqual([unknown.http, unknown.json.status, (unknown.json.body as { error: string }).error], [200, 404, 'unknown_route']);
+  const invalid = await request({ method: 'POST', path: '/items', body: { title: ' ' } });
+  assert.equal(invalid.json.status, 422);
+  // An app-identity envelope (no user) never acts for a person.
+  const noPerson = await send(signRemoteRequest(issuer, { appId: APP_ID, user: null, request: { method: 'GET', path: '/items' } }));
+  assert.equal(noPerson.json.status, 403);
+});
+
+test('refuses forged requests with 401 (no wrapper), a mismatched id with 400 and a replay with 409', async () => {
+  assert.equal((await request({ method: 'GET', path: '/items' }, { badSignature: true })).json.error, 'invalid_signature');
+  const stale = await request({ method: 'GET', path: '/items' }, { timestamp: Math.floor(Date.now() / 1000) - 600 });
+  assert.deepEqual([stale.http, stale.json.error], [401, 'timestamp_out_of_range']);
+  assert.equal((await request({ method: 'GET', path: '/items' }, { issuer: 'https://evil.example' })).json.error, 'issuer_not_allowed');
+  assert.equal((await request({ method: 'GET', path: '/items' }, { webhookId: 'req_other' })).http, 400);
+
+  const signed = signRemoteRequest(issuer, { appId: APP_ID, request: { method: 'GET', path: '/items' } });
+  assert.equal((await send(signed)).http, 200);
+  assert.equal((await send(signed)).http, 409);
+});
+
+test('takes an upload once, with CORS for Olan web', async () => {
+  const created = await request({ method: 'POST', path: '/items', body: { title: 'Görsel' } });
+  const { upload } = created.json.body as { upload: { url: string } };
+
+  const preflight = await fetch(upload.url, { method: 'OPTIONS', headers: { origin: WEB_ORIGIN, 'access-control-request-method': 'PUT' } });
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get('access-control-allow-origin'), WEB_ORIGIN);
+  assert.match(preflight.headers.get('access-control-allow-headers') ?? '', /x-olan-file-name/);
+
+  const put = await fetch(upload.url, { method: 'PUT', headers: { origin: WEB_ORIGIN, 'content-type': 'image/jpeg', 'x-olan-file-name': encodeURIComponent('Ekim görseli.jpg') }, body: 'jpeg-bytes' });
+  assert.equal(put.status, 201);
+  assert.equal(((await put.json()) as { item: { fileName: string } }).item.fileName, 'Ekim görseli.jpg');
+  assert.equal((await fetch(upload.url, { method: 'PUT', body: 'again' })).status, 403); // one-time token
+});

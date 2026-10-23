@@ -1,0 +1,24 @@
+[
+  {
+    "id": "p-saha",
+    "name": "Saha kurulumu",
+    "description": "Kadıköy şantiyesi",
+    "lists": [
+      { "id": "p-saha-l0", "name": "Yapılacaklar", "isDefault": true },
+      { "id": "p-saha-l1", "name": "Boş iş paketi" }
+    ],
+    "tasks": [
+      { "id": "s1", "title": "Keşif ziyareti", "status": "completed", "due": "2026-10-10" },
+      { "id": "s2", "title": "Malzeme siparişi", "status": "in-process", "due": "2026-10-18" },
+      { "id": "s3", "title": "Elektrik tesisatı", "status": "needs-action", "due": "2026-10-22" },
+      { "id": "s4", "title": "Teslim tutanağı", "status": "needs-action", "due": null },
+      { "id": "s5", "title": "Eski plan", "status": "cancelled", "due": "2026-10-01" }
+    ]
+  },
+  {
+    "id": "p-ofis",
+    "name": "Ofis taşınması",
+    "tasks": [{ "id": "o1", "title": "Kolileme", "status": "needs-action", "due": "2026-10-25" }]
+  },
+  { "id": "p-bos", "name": "Boş proje", "tasks": [] }
+]

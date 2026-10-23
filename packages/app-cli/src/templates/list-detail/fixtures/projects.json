@@ -1,0 +1,17 @@
+[
+  {
+    "id": "launch",
+    "name": "Lansman",
+    "description": "Ürün lansmanı",
+    "tasks": [
+      { "id": "t1", "title": "Basın bülteni", "status": "in-process", "due": "2026-10-20" },
+      { "id": "t2", "title": "Web sayfası", "status": "completed", "due": "2026-10-12" },
+      { "id": "t3", "title": "Sosyal medya planı", "status": "needs-action", "due": null }
+    ]
+  },
+  {
+    "id": "tools",
+    "name": "İç araçlar",
+    "tasks": [{ "id": "t4", "title": "Yedekleme betiği", "status": "needs-action", "due": "2026-10-30" }]
+  }
+]

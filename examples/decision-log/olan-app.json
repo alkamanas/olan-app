@@ -1,0 +1,40 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "com.visetra.decision-log",
+  "name": "Karar defteri",
+  "version": "0.1.0",
+  "sdk": "^1.1.0",
+  "minServerVersion": "0.1.0",
+  "description": "Projelere bağlı kararlar: kaydet, göreve dönüştür, sabitle; boş iş paketlerini temizle",
+  "entry": "dist/app.js",
+  "icon": "assets/icon.png",
+  "surfaces": {
+    "app": { "title": "Karar defteri" }
+  },
+  "permissions": ["projects:read", "db", "tasks:write", "tasks:delete", "projects:delete"],
+  "data": {
+    "version": 1,
+    "collections": {
+      "decisions": {
+        "scope": "organization",
+        "fields": {
+          "title": { "type": "string", "required": true, "maxLength": 200, "indexed": true, "label": "Karar" },
+          "status": { "type": "string", "enum": ["open", "done"], "indexed": true, "label": "Durum" },
+          "projectId": { "type": "ref:project", "indexed": true, "label": "Proje" },
+          "taskId": { "type": "ref:task", "label": "Görev" },
+          "decidedOn": { "type": "date", "indexed": true, "label": "Karar tarihi" },
+          "score": { "type": "number", "integer": true, "min": 0, "max": 10, "label": "Önem" },
+          "meta": { "type": "json" }
+        },
+        "rules": { "read": "any", "update": "any", "delete": "owner" }
+      },
+      "pins": {
+        "scope": "user",
+        "fields": {
+          "decisionId": { "type": "string", "maxLength": 64, "indexed": true }
+        }
+      }
+    }
+  }
+}

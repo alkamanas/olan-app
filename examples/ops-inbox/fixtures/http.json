@@ -1,0 +1,3 @@
+{
+  "POST https://ops.example.com/digest": { "status": 202, "json": { "accepted": true } }
+}

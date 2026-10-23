@@ -1,0 +1,23 @@
+{
+  "name": "decision-log",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "olan-app dev",
+    "build": "olan-app build",
+    "validate": "olan-app validate --strict",
+    "test": "olan-app test",
+    "pack": "olan-app pack"
+  },
+  "dependencies": {
+    "@olan-app/sdk": "^1.8.0",
+    "react": "19.2.5"
+  },
+  "devDependencies": {
+    "@olan-app/cli": "^1.8.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.7",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "@olan-app/cli",
+  "version": "1.8.1",
+  "description": "olan-app: build, validate, test and pack Olan Apps",
+  "homepage": "https://docs.olan.app",
+  "bugs": {
+    "url": "https://github.com/alkamanas/olan-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alkamanas/olan-app.git",
+    "directory": "packages/app-cli"
+  },
+  "license": "MIT",
+  "author": "Alkamanas",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "olan-app": "./bin/olan-app.js"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./testing": {
+      "types": "./types/testing.d.ts",
+      "default": "./dist/testing.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "!dist/**/*.map",
+    "types",
+    "src/templates"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "llms": "node scripts/build-llms.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p .",
+    "prepack": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@olan-app/schema": "^1.8.0",
+    "@olan-app/runtime": "^1.0.0",
+    "@olan-app/sdk": "^1.8.0",
+    "esbuild": "^0.28.0",
+    "fflate": "0.8.3",
+    "react": "19.2.5",
+    "ws": "^8.21.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1",
+    "vitest": "^4.1.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

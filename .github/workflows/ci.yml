@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Committed outputs are current
+        run: npm run check
+      - name: Test @olan-app/schema and @olan-app/sdk
+        run: npm test
+
+  # The runtime and CLI suites start isolated-vm isolates and child processes. They pass on macOS
+  # apart from one environment check; this job reports them without blocking until they have
+  # been green on GitHub's runners.
+  runtime-and-cli:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Test @olan-app/runtime and @olan-app/cli
+        run: npm test --workspace @olan-app/runtime --workspace @olan-app/cli
+
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Build the docs site
+        run: npm run site
+      - name: Build the docs image
+        run: docker build -f site/Dockerfile -t olan-app-docs .

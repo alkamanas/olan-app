@@ -1,0 +1,45 @@
+{
+  "name": "olan-app",
+  "private": true,
+  "description": "Olan Apps developer packages: @olan-app/sdk, @olan-app/cli, @olan-app/schema, @olan-app/runtime",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspace @olan-app/schema --workspace @olan-app/sdk --workspace @olan-app/cli",
+    "test": "npm test --workspace @olan-app/schema --workspace @olan-app/sdk",
+    "test:all": "npm test --workspaces",
+    "check": "npm run check-dist --workspace @olan-app/schema --workspace @olan-app/sdk && npm run check-schema --workspace @olan-app/schema && node packages/app-cli/scripts/build-llms.mjs --check",
+    "site": "npm ci --prefix site --ignore-scripts --no-audit --no-fund && node site/build.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "25.6.0",
+    "@types/react": "19.2.14",
+    "esbuild": "0.28.1",
+    "tsx": "4.23.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.5"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "isolated-vm": true
+  },
+  "overrides": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@types/react-reconciler": "0.33.1",
+    "@types/ws": "8.18.1",
+    "fflate": "0.8.3",
+    "isolated-vm": "7.0.1",
+    "quickjs-emscripten": "0.32.0",
+    "react": "19.2.5",
+    "react-reconciler": "0.33.0",
+    "ws": "8.21.1",
+    "zod": "4.3.6"
+  }
+}

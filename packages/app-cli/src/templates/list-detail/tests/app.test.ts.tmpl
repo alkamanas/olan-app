@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { renderApp } from '@olan-app/cli/testing';
+
+// fixtures/projects.json is loaded automatically; `fixtures` here overrides it per test.
+
+test('lists projects and opens a task', async () => {
+  const app = await renderApp({ surface: 'app' });
+  app.expectText('Lansman');
+  app.expectText('İç araçlar');
+
+  await app.press('Lansman');
+  assert.deepEqual(app.navigation(), [{ action: 'push', screen: 'project', params: { projectId: 'launch' } }]);
+  app.expectText('Basın bülteni');
+  app.expectText('Tamamlandı');
+
+  await app.press('Basın bülteni');
+  app.expectText('Durum: Sürüyor');
+
+  await app.back();
+  await app.back();
+  app.expectText('İç araçlar');
+  await app.dispose();
+});
+
+test('shows an empty state without projects', async () => {
+  const app = await renderApp({ fixtures: { projects: [] } });
+  app.expectText('Henüz proje yok');
+  await app.dispose();
+});
+
+test('needs projects:read', async () => {
+  const app = await renderApp({ permissions: [] });
+  assert.equal(app.calls('projects.list')[0]?.error?.code, 'permission_denied');
+  app.expectText('Projeler yüklenemedi');
+  await app.dispose();
+});

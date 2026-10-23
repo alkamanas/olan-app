@@ -1,0 +1,23 @@
+import { test } from 'node:test';
+
+import { renderApp } from '@olan-app/cli/testing';
+
+test('shows the open tasks of the project', async () => {
+  const app = await renderApp({ surface: 'project.widget', params: { projectId: 'site' } });
+  app.expectText('Açık görevler');
+  app.expectText('2 görev');
+  app.expectText('Ana sayfa metni');
+  app.expectText('Sürüyor');
+  app.expectNoText('Alan adı'); // completed
+  await app.dispose();
+});
+
+test('says so when nothing is open', async () => {
+  const app = await renderApp({
+    surface: 'project.widget',
+    params: { projectId: 'x' },
+    fixtures: { projects: [{ id: 'x', name: 'Bitti', tasks: [{ id: 'a', title: 'Eski iş', status: 'completed' }] }] },
+  });
+  app.expectText('Açık görev yok');
+  await app.dispose();
+});

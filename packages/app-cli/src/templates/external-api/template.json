@@ -1,0 +1,1 @@
+{ "description": "Calls an external HTTP API through Olan (olan.http.fetch, http:<host> permission)" }

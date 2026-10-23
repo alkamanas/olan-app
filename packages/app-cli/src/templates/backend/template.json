@@ -1,0 +1,1 @@
+{ "description": "Backend code on Olan (server): olan.backend.call, a schedule, olan.db and a secret setting", "sdk": "^1.8.0" }

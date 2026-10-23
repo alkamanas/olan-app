@@ -1,0 +1,93 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "com.olan.mobile.acceptance",
+  "name": "Saha Kiti",
+  "version": "1.0.0",
+  "sdk": "^1.1.0",
+  "minServerVersion": "0.1.0",
+  "description": "Olan Apps mobil kabul uygulaması: her bileşen ve her platform çağrısı",
+  "entry": "dist/app.js",
+  "surfaces": {
+    "app": {
+      "title": "Saha Kiti"
+    },
+    "project.widget": {
+      "title": "Saha özeti"
+    }
+  },
+  "permissions": [
+    "projects:read",
+    "tasks:write",
+    "db",
+    "storage",
+    "chat:read",
+    "http:api.example.com",
+    "tasks:delete",
+    "projects:delete"
+  ],
+  "data": {
+    "version": 1,
+    "collections": {
+      "notes": {
+        "scope": "organization",
+        "fields": {
+          "title": {
+            "type": "string",
+            "required": true,
+            "maxLength": 120,
+            "indexed": true,
+            "label": "Not"
+          },
+          "done": {
+            "type": "boolean",
+            "indexed": true,
+            "label": "Tamamlandı"
+          }
+        },
+        "rules": {
+          "read": "any",
+          "update": "any",
+          "delete": "owner"
+        }
+      }
+    }
+  },
+  "settings": {
+    "teamName": {
+      "type": "string",
+      "label": "Ekip adı",
+      "description": "Ana ekranda görünür",
+      "default": "Saha ekibi"
+    },
+    "dailyTarget": {
+      "type": "number",
+      "label": "Günlük hedef (görev)",
+      "default": 5
+    },
+    "showCompleted": {
+      "type": "boolean",
+      "label": "Tamamlananları göster",
+      "default": true
+    },
+    "region": {
+      "type": "select",
+      "label": "Bölge",
+      "default": "marmara",
+      "options": [
+        {
+          "value": "marmara",
+          "label": "Marmara"
+        },
+        {
+          "value": "ege",
+          "label": "Ege"
+        },
+        {
+          "value": "ic-anadolu",
+          "label": "İç Anadolu"
+        }
+      ]
+    }
+  }
+}

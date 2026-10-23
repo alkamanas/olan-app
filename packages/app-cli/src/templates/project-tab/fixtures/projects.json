@@ -1,0 +1,27 @@
+[
+  {
+    "id": "site",
+    "name": "Web sitesi",
+    "config": { "goal": "Lansmana hazır ana sayfa", "listId": "site-launch" },
+    "lists": [
+      { "id": "site-launch", "name": "Lansman" },
+      { "id": "site-later", "name": "Sonra" }
+    ],
+    "tasks": [
+      { "id": "s1", "title": "Ana sayfa metni", "listId": "site-launch", "status": "completed", "due": "2026-10-18" },
+      { "id": "s2", "title": "Görseller", "listId": "site-launch", "status": "in-process", "due": "2026-10-22" },
+      { "id": "s3", "title": "Blog", "listId": "site-later", "status": "needs-action" }
+    ]
+  },
+  {
+    "id": "office",
+    "name": "Ofis taşınması",
+    "tasks": [{ "id": "o1", "title": "Kira sözleşmesi", "status": "needs-action" }]
+  },
+  {
+    "id": "hidden",
+    "name": "Uygulamanın eklenmediği proje",
+    "enabled": false,
+    "tasks": []
+  }
+]

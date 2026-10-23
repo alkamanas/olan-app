@@ -1,0 +1,5 @@
+[
+  { "name": "kampanya.jpg", "type": "image/jpeg", "size": 245760, "content": "jpeg-bytes" },
+  { "name": "tanitim.mp4", "type": "video/mp4", "size": 5242880, "content": "mp4-bytes" },
+  { "name": "brief.pdf", "type": "application/pdf", "size": 48213, "content": "pdf-bytes" }
+]

@@ -1,0 +1,47 @@
+{
+  "name": "@olan-app/schema",
+  "version": "1.8.1",
+  "description": "Olan Apps UI tree, manifest and permission schemas (zod + JSON Schema)",
+  "homepage": "https://docs.olan.app",
+  "bugs": {
+    "url": "https://github.com/alkamanas/olan-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alkamanas/olan-app.git",
+    "directory": "packages/app-schema"
+  },
+  "license": "MIT",
+  "author": "Alkamanas",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schemas/*": "./schemas/*"
+  },
+  "files": [
+    "dist",
+    "schemas"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p .",
+    "emit-schema": "tsx scripts/emit-json-schema.ts",
+    "check-schema": "tsx scripts/emit-json-schema.ts --check",
+    "check-dist": "tsx scripts/check-dist.ts"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "office",
+    "name": "Ofis kurulumu",
+    "taskKeyPrefix": "OFS",
+    "members": [
+      { "userId": "00000000-0000-4000-8000-000000000001", "displayName": "Utku", "role": "owner" },
+      { "userId": "00000000-0000-4000-8000-000000000002", "displayName": "Ayşe", "role": "manager" }
+    ],
+    "tasks": [
+      { "id": "desk", "key": "OFS-1", "title": "Toplantı masası", "status": "needs-action", "due": "2026-11-05" },
+      { "id": "screens", "key": "OFS-2", "title": "Ekranlar", "status": "in-process" }
+    ],
+    "statuses": [{ "key": "awaiting-approval", "name": "Onay bekliyor", "category": "started", "color": "#E0A526" }],
+    "links": [
+      {
+        "id": "link-screens",
+        "target": { "kind": "task", "id": "screens" },
+        "externalId": "SAT-7",
+        "card": {
+          "version": 1,
+          "root": 1,
+          "fallbackText": "SAT-7 · 4 ekran",
+          "nodes": [
+            { "id": 1, "type": "Card", "props": { "title": "4 ekran", "subtitle": "SAT-7" }, "children": [2, 3] },
+            { "id": 2, "type": "Badge", "props": { "text": "Onay bekliyor", "tone": "warning" }, "children": [] },
+            { "id": 3, "type": "Button", "props": { "label": "Kaydı aç", "action": { "kind": "open", "payload": { "recordId": "SAT-7" } } }, "children": [] }
+          ]
+        }
+      }
+    ],
+    "calendarItems": [{ "externalId": "SAT-7", "title": "Teslim: 4 ekran", "start": "2026-11-10", "linkId": "link-screens" }],
+    "approvals": [
+      {
+        "id": "approval-screens",
+        "title": "SAT-7 · 4 ekran onayı",
+        "approverIds": ["00000000-0000-4000-8000-000000000002"],
+        "mode": "any",
+        "externalId": "SAT-7",
+        "linkId": "link-screens"
+      }
+    ]
+  },
+  {
+    "id": "hidden",
+    "name": "Uygulamanın eklenmediği proje",
+    "enabled": false,
+    "tasks": [{ "id": "hidden-1", "title": "Gizli görev" }]
+  }
+]

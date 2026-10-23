@@ -1,0 +1,20 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "{{appId}}",
+  "name": "{{appName}}",
+  "version": "0.1.0",
+  "sdk": "^1.8.0",
+  "minServerVersion": "{{minServerVersion}}",
+  "entry": "dist/app.js",
+  "icon": "assets/icon.png",
+  "surfaces": {
+    "app": { "title": "{{appName}}" }
+  },
+  "permissions": ["files:pick"],
+  "remote": {
+    "url": "http://127.0.0.1:4100/olan",
+    "jwksUrl": "http://127.0.0.1:4100/.well-known/jwks.json",
+    "requests": true
+  }
+}

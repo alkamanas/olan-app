@@ -1,0 +1,20 @@
+[
+  {
+    "id": "7a1d4c2e-1f3b-4e5a-9c6d-0b8e2f4a6c10",
+    "name": "Lansman",
+    "description": "Ürün lansmanı",
+    "lists": [
+      { "id": "c0a80101-0000-4000-8000-000000000001", "name": "Yapılacaklar" },
+      { "id": "c0a80101-0000-4000-8000-000000000002", "name": "Tasarım" },
+      { "id": "c0a80101-0000-4000-8000-000000000003", "name": "Eski fikirler" }
+    ],
+    "tasks": [
+      { "id": "d1f0e2a3-4b5c-4d6e-8f70-112233445566", "title": "Afiş taslağı", "listId": "c0a80101-0000-4000-8000-000000000002", "status": "in-process", "due": "2026-10-24" }
+    ]
+  },
+  {
+    "id": "3e9b6a14-8c2d-4f71-a5e0-6d4c2b1a0f20",
+    "name": "İç araçlar",
+    "tasks": []
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "conversations": [
+    { "id": "c-saha", "title": "Saha ekibi", "kind": "group" },
+    { "id": "c-ayse", "title": "Ayşe Yılmaz", "kind": "direct" }
+  ],
+  "messages": {
+    "c-saha": [{ "id": "m1", "body": "Malzemeler yarın geliyor", "sender": { "id": "u2", "displayName": "Ayşe Yılmaz" } }]
+  }
+}

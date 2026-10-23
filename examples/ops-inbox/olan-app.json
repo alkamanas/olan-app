@@ -1,0 +1,43 @@
+{
+  "$schema": "https://olan.app/schemas/olan-app/v1.json",
+  "schemaVersion": 1,
+  "id": "com.visetra.ops-inbox",
+  "name": "Operasyon Kutusu",
+  "version": "0.1.0",
+  "sdk": "^1.4.0",
+  "minServerVersion": "0.1.0",
+  "description": "Olan'da çalışan backend: yeni görevleri ve GitHub push'larını toplar, 5 dakikada bir özet yazar",
+  "entry": "dist/app.js",
+  "icon": "assets/icon.png",
+  "surfaces": {
+    "app": { "title": "Operasyon Kutusu" }
+  },
+  "permissions": ["db", "projects:read", "http:ops.example.com"],
+  "settings": {
+    "apiToken": { "type": "string", "label": "Operasyon API anahtarı", "description": "Özetler ops.example.com'a bu anahtarla gönderilir; yalnız backend okur.", "secret": true },
+    "githubSecret": { "type": "string", "label": "GitHub webhook sırrı", "description": "GitHub webhook ayarındaki Secret; imzayı Olan doğrular.", "secret": true }
+  },
+  "data": {
+    "version": 1,
+    "collections": {
+      "records": {
+        "scope": "organization",
+        "fields": {
+          "kind": { "type": "string", "enum": ["task", "push", "digest"], "required": true, "indexed": true, "label": "Tür" },
+          "title": { "type": "string", "required": true, "maxLength": 300, "label": "Başlık" },
+          "projectId": { "type": "string", "maxLength": 64, "label": "Proje" },
+          "detail": { "type": "json" }
+        },
+        "rules": { "read": "any", "update": "owner", "delete": "owner" }
+      }
+    }
+  },
+  "server": {
+    "entry": "server/index.ts",
+    "schedules": [{ "name": "digest", "cron": "*/5 * * * *", "timeZone": "Europe/Istanbul" }],
+    "events": { "project.task.created": "onTaskCreated" },
+    "hooks": [
+      { "name": "github", "verify": { "kind": "hmac-sha256", "header": "x-hub-signature-256", "secretSetting": "githubSecret" } }
+    ]
+  }
+}

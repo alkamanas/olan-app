@@ -1,0 +1,12 @@
+{
+  "https://status.example.com/api/services.json": {
+    "status": 200,
+    "json": {
+      "services": [
+        { "id": "api", "name": "API", "status": "up" },
+        { "id": "mail", "name": "E-posta", "status": "degraded" },
+        { "id": "files", "name": "Dosyalar", "status": "down" }
+      ]
+    }
+  }
+}

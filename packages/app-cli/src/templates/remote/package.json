@@ -1,0 +1,27 @@
+{
+  "name": "{{packageName}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "olan-app dev",
+    "build": "olan-app build",
+    "validate": "olan-app validate --strict",
+    "test": "olan-app test",
+    "pack": "olan-app pack",
+    "server": "node app-server/server.ts"
+  },
+  "dependencies": {
+    "@olan-app/sdk": "{{sdkDependency}}",
+    "react": "19.2.5"
+  },
+  "devDependencies": {
+    "@olan-app/cli": "{{cliDependency}}",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.7",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

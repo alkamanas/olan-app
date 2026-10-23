@@ -1,0 +1,1366 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://olan.app/schemas/olan-app/v1.json",
+  "title": "Olan app manifest (olan-app.json), schema version 1",
+  "description": "Manifest of an Olan app package. Cross-field rules (entry/url per kind, web-link restrictions, duplicate permissions, data limits such as at most 5 indexed fields, remote URLs, event and tool permissions) are checked by `olan-app validate`.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "description": "JSON Schema URL, normally \"https://olan.app/schemas/olan-app/v1.json\".",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1,
+      "description": "Manifest schema version. Currently always 1."
+    },
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$",
+      "description": "Reverse-domain app id, e.g. \"com.example.overdue-tasks\" (≤ 128)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "description": "Display name (≤ 80)."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$",
+      "description": "App version (semver)."
+    },
+    "sdk": {
+      "type": "string",
+      "description": "Supported @olan-app/sdk range: \"*\", \"x.y.z\", \"^x.y.z\", \"~x.y.z\" or \">=x.y.z <a.b.c\"."
+    },
+    "minServerVersion": {
+      "description": "Oldest Olan server version that can install the app.",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$"
+    },
+    "description": {
+      "description": "Short description (≤ 400).",
+      "type": "string",
+      "maxLength": 400
+    },
+    "entry": {
+      "description": "Bundle path inside the package, normally \"dist/app.js\". Required for kind \"app\", absent for \"web-link\".",
+      "type": "string"
+    },
+    "icon": {
+      "description": "Icon: a package path (png/svg/jpg/webp) for kind \"app\"; an http(s) URL or Olan icon name for \"web-link\".",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "kind": {
+      "default": "app",
+      "description": "\"app\" (default) or \"web-link\".",
+      "type": "string",
+      "enum": [
+        "app",
+        "web-link"
+      ]
+    },
+    "url": {
+      "description": "Only for kind \"web-link\": the http(s) address to open.",
+      "type": "string"
+    },
+    "surfaces": {
+      "type": "object",
+      "properties": {
+        "app": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "description": "Title shown by the host (≤ 80).",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "project.widget": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "description": "Title shown by the host (≤ 80).",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "description": "Title shown by the host (≤ 80).",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "chat.action": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "chat.command": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the suggestions (1–80, required)."
+            },
+            "command": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{1,31}$",
+              "description": "Command typed after \"/\": ^[a-z][a-z0-9-]{1,31}$."
+            },
+            "description": {
+              "description": "Shown next to the command (≤ 120).",
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          "required": [
+            "title",
+            "command"
+          ],
+          "additionalProperties": false,
+          "description": "chat.command options."
+        },
+        "chat.card": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "mail.sidebar": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "mail.action": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "calendar.event.action": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "meeting.panel": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "project.tab": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "description": "Title shown by the host (≤ 80).",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "project.settings": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "description": "Title shown by the host (≤ 80).",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "task.action": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "issue.action": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        },
+        "record.card": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Title shown in the host menu or panel (1–80, required)."
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "additionalProperties": false,
+          "description": "Surface options."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Surfaces the app provides. Known surfaces: app, project.widget, settings, chat.action, chat.command, chat.card, mail.sidebar, mail.action, calendar.event.action, meeting.panel, project.tab, project.settings, task.action, issue.action, record.card."
+    },
+    "permissions": {
+      "description": "Requested permissions: projects:read, projects:write, tasks:write, tasks:delete, projects:delete, projects:create, projects:archive, projects:extend, users:read, profile:read, chat:read, chat:write, calendar:read, calendar:write, calendar:delete, contacts:read, contacts:write, contacts:delete, mail:read, meetings:read, storage, db, files:pick, settings:read, remote, ai:tools, http:<host>.",
+      "default": [],
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(?:projects:read|projects:write|tasks:write|tasks:delete|projects:delete|projects:create|projects:archive|projects:extend|users:read|profile:read|chat:read|chat:write|calendar:read|calendar:write|calendar:delete|contacts:read|contacts:write|contacts:delete|mail:read|meetings:read|storage|db|files:pick|settings:read|remote|ai:tools|http:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*(?::[0-9]{1,5})?)$"
+      }
+    },
+    "settings": {
+      "description": "Settings form fields keyed by setting name.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$"
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "string"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 400
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "secret": {
+                "description": "Encrypted on the server and masked in admin screens.",
+                "type": "boolean"
+              },
+              "default": {
+                "type": "string",
+                "maxLength": 4096
+              }
+            },
+            "required": [
+              "type",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "number"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 400
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "secret": {
+                "description": "Encrypted on the server and masked in admin screens.",
+                "type": "boolean"
+              },
+              "default": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "boolean"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 400
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "secret": {
+                "description": "Encrypted on the server and masked in admin screens.",
+                "type": "boolean"
+              },
+              "default": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "select"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 400
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "secret": {
+                "description": "Encrypted on the server and masked in admin screens.",
+                "type": "boolean"
+              },
+              "options": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80
+                    }
+                  },
+                  "required": [
+                    "value",
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "default": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "label",
+              "options"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000,
+          "description": "Data schema version; increase it whenever the schema changes."
+        },
+        "collections": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,39}$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "organization",
+                  "user"
+                ],
+                "description": "\"organization\" (shared, with rules) or \"user\" (each person sees only their rows)."
+              },
+              "fields": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$"
+                },
+                "additionalProperties": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "string"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        },
+                        "maxLength": {
+                          "description": "Default 1000, ≤ 10000.",
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        },
+                        "enum": {
+                          "minItems": 1,
+                          "maxItems": 100,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100
+                          }
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "number"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        },
+                        "integer": {
+                          "type": "boolean"
+                        },
+                        "min": {
+                          "type": "number"
+                        },
+                        "max": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "boolean"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "date"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "datetime"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "json"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "ref:project"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "ref:task"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "ref:user"
+                        },
+                        "required": {
+                          "description": "Value must be present and non-null (default false).",
+                          "type": "boolean"
+                        },
+                        "indexed": {
+                          "description": "Usable in where/orderBy (≤ 5 per collection, not json).",
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "description": "Label for Studio and exports (≤ 80).",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ],
+                  "description": "Field: string, number, boolean, date, datetime, json, ref:project, ref:task, ref:user."
+                }
+              },
+              "rules": {
+                "description": "Organization collections only. Default { read: \"any\", update: \"any\", delete: \"owner\" }.",
+                "type": "object",
+                "properties": {
+                  "read": {
+                    "type": "string",
+                    "enum": [
+                      "any",
+                      "owner"
+                    ]
+                  },
+                  "update": {
+                    "type": "string",
+                    "enum": [
+                      "any",
+                      "owner"
+                    ]
+                  },
+                  "delete": {
+                    "type": "string",
+                    "enum": [
+                      "any",
+                      "owner"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "scope",
+              "fields"
+            ],
+            "additionalProperties": false,
+            "description": "Collection."
+          },
+          "description": "Collections keyed by name (≤ 20)."
+        }
+      },
+      "required": [
+        "version",
+        "collections"
+      ],
+      "additionalProperties": false,
+      "description": "App database (olan.db): collections and their fields."
+    },
+    "remote": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "maxLength": 2048,
+          "description": "Base URL of the app server: https (http only for loopback/private hosts, in development). Olan posts to {url}/events, {url}/ai-tools/{name} and {url}/card-actions."
+        },
+        "jwksUrl": {
+          "type": "string",
+          "maxLength": 2048,
+          "description": "The app server's public keys (JWKS) for token requests (private_key_jwt)."
+        },
+        "requests": {
+          "description": "Turns on olan.remote.request: Olan posts signed requests to {url}/requests on behalf of the person (default false).",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "url",
+        "jwksUrl"
+      ],
+      "additionalProperties": false,
+      "description": "The app's own server; implies the \"remote\" permission."
+    },
+    "events": {
+      "description": "Events delivered to {remote.url}/events (needs \"remote\"): chat.message.created, project.task.created, project.task.updated, project.task.deleted, project.task.completed, project.issue.opened, project.issue.closed, project.issue.triaged, project.approval.decided, calendar.event.created, calendar.event.updated, calendar.event.deleted, meeting.created, meeting.started, meeting.ended, meeting.cancelled.",
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ai": {
+      "type": "object",
+      "properties": {
+        "tools": {
+          "description": "Assistant tools (≤ 16) run by the app server; implies \"ai:tools\".",
+          "maxItems": 16,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{1,31}$",
+                "description": "Tool name: ^[a-z][a-z0-9_]{1,31}$, unique in the app."
+              },
+              "title": {
+                "description": "Shown on confirmation cards (≤ 80).",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024,
+                "description": "What the tool does; goes to the model (1–1024)."
+              },
+              "input": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "$ref": "#/$defs/__schema0"
+                },
+                "description": "JSON Schema 2020-12 of the input: \"type\": \"object\" at the root, ≤ 8 KiB, only local $ref."
+              },
+              "permissions": {
+                "default": [],
+                "description": "Subset of the manifest permissions; the call token carries only these.",
+                "maxItems": 64,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "readOnly": {
+                "default": false,
+                "description": "Only reads: runs without confirmation and may be retried once.",
+                "type": "boolean"
+              },
+              "destructive": {
+                "default": false,
+                "description": "Deletes or overwrites: always confirmed. Not together with readOnly.",
+                "type": "boolean"
+              },
+              "timeoutMs": {
+                "description": "Call timeout in ms, 1000–60000 (readOnly tools ≤ 15000); default 15000.",
+                "type": "integer",
+                "minimum": 1000,
+                "maximum": 60000
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "input"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "description": "Olan assistant integration."
+    },
+    "server": {
+      "type": "object",
+      "properties": {
+        "entry": {
+          "type": "string",
+          "description": "Backend module inside the package, normally \"server/index.ts\"."
+        },
+        "schedules": {
+          "description": "Scheduled runs (≤ 10, at least 5 minutes apart).",
+          "maxItems": 10,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,31}$"
+              },
+              "cron": {
+                "type": "string"
+              },
+              "timeZone": {
+                "type": "string"
+              },
+              "function": {
+                "description": "Optional fallback: functions[function] of the backend module, used when defineBackend has no schedules[name]. A function named here is never callable from the UI (olan.backend.call).",
+                "type": "string",
+                "pattern": "^[A-Za-z_$][A-Za-z0-9_$]{0,63}$"
+              }
+            },
+            "required": [
+              "name",
+              "cron"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "events": {
+          "description": "Event type → fallback function (used when defineBackend has no events[type]; never callable from the UI). Event types: app.installed, app.updated, app.uninstalled, app.consent.changed, chat.message.created, project.task.created, project.task.updated, project.task.deleted, project.task.completed, project.issue.opened, project.issue.closed, project.issue.triaged, project.approval.decided, calendar.event.created, calendar.event.updated, calendar.event.deleted, meeting.created, meeting.started, meeting.ended, meeting.cancelled.",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[A-Za-z_$][A-Za-z0-9_$]{0,63}$",
+            "description": "Exported function of the backend module."
+          }
+        },
+        "hooks": {
+          "description": "Incoming webhooks: POST /api/v2/apps/hooks/<installationId>/<name>.",
+          "maxItems": 10,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,31}$"
+              },
+              "function": {
+                "description": "Optional fallback: functions[function] of the backend module, used when defineBackend has no hooks[name]. A function named here is never callable from the UI (olan.backend.call).",
+                "type": "string",
+                "pattern": "^[A-Za-z_$][A-Za-z0-9_$]{0,63}$"
+              },
+              "verify": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "hmac-sha256",
+                      "standard-webhooks",
+                      "none"
+                    ]
+                  },
+                  "header": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "secretSetting": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "verify"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "entry"
+      ],
+      "additionalProperties": false,
+      "description": "Backend code that runs on the Olan server, in an isolated sandbox (docs/backend.md)."
+    },
+    "projectTemplates": {
+      "maxItems": 5,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,62}$",
+            "description": "Stable id within the app."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Name in \"Yeni proje\" (≤ 120)."
+          },
+          "description": {
+            "description": "When to use it (≤ 2000).",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "content": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "number",
+                "const": 1
+              },
+              "lists": {
+                "minItems": 1,
+                "maxItems": 50,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "code": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 24
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "color": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^#[0-9a-fA-F]{6}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "steps": {
+                      "maxItems": 50,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "key": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 40
+                          },
+                          "title": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          },
+                          "color": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "pattern": "^#[0-9a-fA-F]{6}$"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "key",
+                          "title"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "title"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "statuses": {
+                "maxItems": 30,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9._-]{0,62}$"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 60
+                    },
+                    "color": {
+                      "type": "string",
+                      "pattern": "^#[0-9a-fA-F]{6}$"
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "backlog",
+                        "unstarted",
+                        "started",
+                        "completed",
+                        "cancelled"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "name",
+                    "color",
+                    "category"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "labels": {
+                "maxItems": 100,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 50
+                    },
+                    "color": {
+                      "type": "string",
+                      "pattern": "^#[0-9a-fA-F]{6}$"
+                    },
+                    "groupName": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 50
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "description": {
+                      "type": "string",
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "color"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "tasks": {
+                "maxItems": 200,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "$ref": "#/$defs/__schema0"
+                  }
+                }
+              },
+              "recordTemplates": {
+                "maxItems": 50,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "$ref": "#/$defs/__schema0"
+                  }
+                }
+              },
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "maxLength": 20000
+                  },
+                  "coverColor": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 32
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "estimateScale": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "fibonacci",
+                      "linear",
+                      "tshirt"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "version",
+              "lists"
+            ],
+            "additionalProperties": false,
+            "description": "The template: work packages (\"lists\", with \"steps\"), \"statuses\", \"labels\", starter \"tasks\", \"recordTemplates\" and \"settings\" (docs/manifest.md)."
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "content"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Project templates the app offers in \"Yeni proje\" (≤ 5); a project made from one has the app added."
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "version",
+    "sdk"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  }
+}

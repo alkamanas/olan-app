@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { createBackendHarness } from '@olan-app/cli/testing';
+
+test('addNote and summary', async () => {
+  const backend = await createBackendHarness({ secrets: { apiToken: 't' } });
+  try {
+    const added = await backend.call<{ id: string }>('addNote', { text: 'Merhaba' });
+    assert.equal(added.ok, true, added.error?.message);
+    assert.match(added.logs[0]?.message ?? '', /note added/);
+    const summary = await backend.call<{ count: number; configured: boolean }>('summary');
+    assert.equal(summary.value?.count, 1);
+    assert.equal(summary.value?.configured, true);
+    const failed = await backend.call('addNote', {});
+    assert.equal(failed.error?.code, 'backend_error');
+  } finally {
+    await backend.dispose();
+  }
+});
+
+test('the heartbeat schedule writes a note', async () => {
+  const backend = await createBackendHarness();
+  try {
+    const run = await backend.runSchedule('heartbeat', { scheduledAt: '2026-10-17T10:00:00.000Z' });
+    assert.equal(run.ok, true, run.error?.message);
+    assert.equal(backend.host.data.db.notes?.[0]?.data.source, 'schedule');
+  } finally {
+    await backend.dispose();
+  }
+});

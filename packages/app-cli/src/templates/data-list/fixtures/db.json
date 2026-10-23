@@ -1,0 +1,6 @@
+{
+  "notes": [
+    { "id": "0b9a3c52-5f0e-4a8e-9d2c-1c6f8f3e7a01", "data": { "title": "Haftalık toplantı gündemi", "body": "Sprint özeti, riskler", "done": false }, "createdAt": "2026-10-14T09:00:00.000Z" },
+    { "id": "6d2e8f14-3b7a-4c9d-8e1f-2a5b7c9d0e02", "data": { "title": "Sunucu yedeklerini kontrol et", "done": true }, "createdAt": "2026-10-15T09:00:00.000Z" }
+  ]
+}

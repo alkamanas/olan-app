@@ -1,0 +1,19 @@
+[
+  {
+    "id": "site",
+    "name": "Web sitesi",
+    "tasks": [
+      { "id": "s1", "title": "Ana sayfa metni", "status": "in-process", "due": "2026-10-14" },
+      { "id": "s2", "title": "Görseller", "status": "needs-action", "due": "2026-10-09" },
+      { "id": "s3", "title": "Alan adı", "status": "completed", "due": "2026-10-01" },
+      { "id": "s4", "title": "SSS sayfası", "status": "needs-action", "due": "2026-10-30" },
+      { "id": "s5", "title": "Eski tasarım", "status": "cancelled", "due": "2026-09-20" },
+      { "id": "s6", "title": "Yazım denetimi", "status": "needs-action", "due": null }
+    ]
+  },
+  {
+    "id": "calm",
+    "name": "Sakin proje",
+    "tasks": [{ "id": "c1", "title": "Zamanında iş", "status": "needs-action", "due": "2026-11-01" }]
+  }
+]

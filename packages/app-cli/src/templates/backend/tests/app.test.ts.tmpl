@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
+import { renderApp } from '@olan-app/cli/testing';
+
+// renderApp runs the real backend (server/index.ts) for olan.backend.call, on the same mock database.
+test('shows the backend summary and adds a note through the backend', async () => {
+  const app = await renderApp({ settings: { apiToken: 'secret-token' } });
+  app.expectText('0 not');
+  app.expectText('API anahtarı ayarlı');
+  await app.press('Not ekle');
+  await app.waitForText('1 not');
+  assert.equal(app.host.data.db.notes?.length, 1);
+  assert.deepEqual(app.toasts().at(-1), { text: 'Not eklendi', tone: 'success' });
+  await app.dispose();
+});
+
+test('the UI never sees the secret setting', async () => {
+  const app = await renderApp({ settings: { apiToken: 'secret-token' } });
+  assert.deepEqual(await app.host.handle('settings.get', {}), { ok: true, result: { apiToken: null } });
+  await app.dispose();
+});
