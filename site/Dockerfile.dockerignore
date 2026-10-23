@@ -8,3 +8,4 @@
 !site/build.mjs
 !site/style.css
 !site/nginx.conf
+!site/assets/*.svg

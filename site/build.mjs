@@ -180,13 +180,13 @@ function layout({ title, description, path, body, nav, css }) {
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="${SITE_URL}${path}">
 <link rel="stylesheet" href="/${css}">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%2300ce9d' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="/assets/olan-mark.svg">
 </head>
 <body>
 <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
 <header class="topbar">
   <label for="nav-toggle" class="menu-button" aria-label="Menu"><span></span></label>
-  <a class="brand" href="/"><span class="logo" aria-hidden="true"></span>Olan Apps <span class="brand-sub">docs</span></a>
+  <a class="brand" href="/" aria-label="Olan Apps docs"><img class="logo logo-on-light" src="/assets/olan-logo-on-light.svg" alt="Olan" width="81" height="24"><img class="logo logo-on-dark" src="/assets/olan-logo-on-dark.svg" alt="" width="81" height="24">Apps <span class="brand-sub">docs</span></a>
   <nav class="top-links" aria-label="External">
     <a href="https://www.npmjs.com/package/@olan-app/sdk">npm</a>
     <a href="${GITHUB_URL}">GitHub</a>
@@ -248,7 +248,7 @@ function verifyLinks(out) {
   const broken = [];
   for (const [file, text] of html) {
     for (const [, href] of text.matchAll(/href="([^"]+)"/g)) {
-      if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('/llms.txt') || href.startsWith('/style.')) continue;
+      if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('/llms.txt') || href.startsWith('/style.') || href.startsWith('/assets/')) continue;
       const [path, hash] = href.split('#');
       const target = path === '' ? file : join(out, path, path.endsWith('/') ? 'index.html' : '');
       if (!html.has(target)) broken.push(`${file.slice(out.length)}: ${href}`);
@@ -323,6 +323,9 @@ export function buildSite({ root, out }) {
   }));
 
   verifyLinks(out);
+  // The Olan logo and mark (header and favicon).
+  mkdirSync(join(out, 'assets'), { recursive: true });
+  for (const name of readdirSync(join(here, 'assets'))) writeFileSync(join(out, 'assets', name), readFileSync(join(here, 'assets', name)));
   writeFileSync(join(out, 'llms.txt'), readFileSync(llmsPath));
   const urls = ['/', ...names.map((n) => `/${n}/`)];
   writeFileSync(join(out, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${SITE_URL}${u}</loc></url>`).join('\n')}\n</urlset>\n`);

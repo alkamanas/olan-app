@@ -1,0 +1,15 @@
+{
+  "name": "olan-app",
+  "version": "1.8.1",
+  "description": "Shortcut for the Olan Apps CLI: `npx olan-app init` runs @olan-app/cli.",
+  "type": "module",
+  "bin": { "olan-app": "./bin/olan-app.js" },
+  "files": ["bin", "README.md", "LICENSE"],
+  "engines": { "node": ">=22" },
+  "dependencies": { "@olan-app/cli": "^1.8.1" },
+  "license": "MIT",
+  "homepage": "https://docs.olan.app",
+  "repository": { "type": "git", "url": "git+https://github.com/alkamanas/olan-app.git", "directory": "npm-alias" },
+  "bugs": { "url": "https://github.com/alkamanas/olan-app/issues" },
+  "publishConfig": { "access": "public" }
+}

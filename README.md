@@ -67,4 +67,4 @@ Issues and questions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 ## License
 
 The packages, examples, documentation and site in this repository are released under the
-[MIT License](LICENSE).
+[MIT License](LICENSE). The Olan name and logo (`site/assets/`) are Olan's trademarks and are not covered by the MIT License.

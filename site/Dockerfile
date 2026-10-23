@@ -8,6 +8,7 @@ RUN npm ci --prefix site --ignore-scripts --no-audit --no-fund
 COPY docs docs
 COPY packages/app-sdk/README.md packages/app-sdk/llms.txt packages/app-sdk/
 COPY site/build.mjs site/style.css site/
+COPY site/assets site/assets
 RUN node site/build.mjs --root /src --out /out
 
 FROM nginx:1.29-alpine
